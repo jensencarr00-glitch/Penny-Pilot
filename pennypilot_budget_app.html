@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101610">
+<title>PENNYPILOT — Personal Budget Terminal</title>
+<style>
+:root{--bg:#0b100c;--panel:#111a13;--panel2:#0d150f;--line:#294331;--green:#a7f3a0;--bright:#d4ffd0;--muted:#8aa18c;--amber:#e8c477;--red:#f08b83;--mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#142218 0,#0b100c 55%);color:#d8e8d7;font-family:var(--mono);font-size:14px;line-height:1.5}
+main{max-width:1050px;margin:0 auto;padding:22px 16px 48px}
+header{border:1px solid var(--line);background:#0d160f;padding:20px;border-radius:12px;position:relative;overflow:hidden}
+header:after{content:"[ 0101 0010 1100 1010 ]";position:absolute;right:18px;top:18px;color:#38543d;font-size:11px;letter-spacing:2px}
+.kicker,.muted,.hint{color:var(--muted)}
+.kicker{font-size:11px;letter-spacing:2px;text-transform:uppercase}
+h1{margin:4px 0 0;color:var(--bright);font-size:clamp(28px,6vw,44px);letter-spacing:2px}
+h1 span{color:var(--green)}
+.subtitle{margin:6px 0 0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
+.card{grid-column:span 12;background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.half{grid-column:span 6}
+.third{grid-column:span 4}
+h2{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin:0 0 13px}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+input,select,button{font:inherit}
+input,select{width:100%;background:#080e09;color:var(--bright);border:1px solid #36553c;border-radius:6px;padding:11px;outline:none}
+input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 2px #a7f3a022}
+button{cursor:pointer;border:1px solid #527b58;background:#18301d;color:var(--bright);padding:9px 12px;border-radius:6px}
+button:hover{background:#23432a}
+button.secondary{background:#101a12;border-color:var(--line);color:#b5cbb5}
+button.danger{border-color:#75423d;color:#ffb1a9;background:#241311}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.field{flex:1;min-width:140px}
+.big-number{font-size:clamp(26px,5vw,36px);font-weight:bold;color:var(--bright);line-height:1.2}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{border:1px dashed #34503a;border-radius:8px;padding:12px;background:#0a120c}
+.rule{border-top:1px dashed #34503a;margin:14px 0}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;color:var(--muted);font-size:11px;font-weight:normal;text-transform:uppercase;letter-spacing:1px}
+td,th{padding:9px 5px;border-bottom:1px dashed #294331}
+td:last-child,th:last-child{text-align:right}
+td:nth-child(2),th:nth-child(2){text-align:right}
+.alloc-input{width:78px;padding:7px;text-align:right}
+.amount{color:var(--bright);white-space:nowrap}
+.category-name{color:#d8e8d7}
+.bar{height:9px;background:#080e09;border:1px solid #263d2b;border-radius:20px;overflow:hidden;margin-top:5px}
+.bar>i{display:block;height:100%;background:var(--green);width:0}
+.total-line{display:flex;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-weight:bold}
+.status{font-size:12px;margin-top:8px}
+.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
+.small{font-size:11px;color:var(--muted)}
+.goal-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:12px 0}
+.goal-row input{max-width:130px}
+.footer{color:#627b66;font-size:11px;text-align:center;margin-top:18px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:700px){.half,.third{grid-column:span 12}.stats{grid-template-columns:1fr 1fr}header:after{display:none}main{padding:12px 10px 30px}.card{padding:13px}td,th{font-size:12px}.alloc-input{width:68px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="kicker">PERSONAL FINANCE SYSTEM // BUILD 001</div>
+  <h1>PENNY<span>PILOT</span> <span style="font-size:16px">▰</span></h1>
+  <p class="subtitle">A simple system for telling every pound where to go.</p>
+</header>
+
+<div class="grid">
+<section class="card half">
+  <h2>[ 01 ] Income settings</h2>
+  <div class="row">
+    <div class="field">
+      <label for="income">Take-home pay (£)</label>
+      <input id="income" type="number" min="0" step="0.01" value="2100">
+    </div>
+    <div class="field">
+      <label for="frequency">How often are you paid?</label>
+      <select id="frequency">
+        <option value="4weekly" selected>Every 4 weeks (13/year)</option>
+        <option value="monthly">Monthly (12/year)</option>
+        <option value="weekly">Weekly (52/year)</option>
+      </select>
+    </div>
+  </div>
+  <p class="hint small">Enter the amount that actually reaches your bank account, after tax and deductions.</p>
+  <div class="rule"></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">This payday</div><div class="big-number" id="periodIncome">£2,100</div></div>
+    <div class="stat"><div class="stat-label">Monthly average</div><div class="big-number" id="monthlyIncome">£2,275</div></div>
+    <div class="stat"><div class="stat-label">Annual take-home</div><div class="big-number" id="annualIncome">£27,300</div></div>
+  </div>
+</section>
+
+<section class="card half">
+  <h2>[ 02 ] Your money snapshot</h2>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Allocated</div><div class="big-number" id="allocatedPct">100%</div></div>
+    <div class="stat"><div class="stat-label">Left unallocated</div><div class="big-number" id="leftover">£0</div></div>
+    <div class="stat"><div class="stat-label">Saved / invested</div><div class="big-number" id="savedAmount">£1,183</div></div>
+  </div>
+  <p class="status" id="allocationStatus" aria-live="polite"></p>
+  <p class="small">The percentages below are a starting template, not financial rules. Edit them to match your real bills and priorities.</p>
+</section>
+
+<section class="card">
+  <h2>[ 03 ] Allocation control panel</h2>
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Category</th><th>Share</th><th>Amount / payday</th></tr></thead>
+    <tbody id="allocationRows"></tbody>
+  </table>
+  </div>
+  <div class="total-line"><span>TOTAL ALLOCATED</span><span id="totalAmount">£2,100.00</span></div>
+  <div class="actions">
+    <button id="reset">↺ Reset suggested split</button>
+    <button class="secondary" id="equal">Split equally</button>
+  </div>
+</section>
+
+<section class="card half">
+  <h2>[ 04 ] Savings targets</h2>
+  <div class="goal-row"><div><label for="emergencySaved">Emergency fund saved (£)</label><input id="emergencySaved" type="number" min="0" step="1" value="0"></div><div class="amount" id="emergencyTargetText">Target: £4,000</div></div>
+  <div class="goal-row"><div><label for="emergencyTarget">Emergency fund target (£)</label><input id="emergencyTarget" type="number" min="0" step="100" value="4000"></div><div class="amount" id="emergencyETA">—</div></div>
+  <div class="bar"><i id="emergencyBar"></i></div>
+  <p class="small" id="emergencyProgress">0% complete</p>
+  <div class="rule"></div>
+  <div class="goal-row"><div><label for="lisaSaved">LISA contributions this tax year (£)</label><input id="lisaSaved" type="number" min="0" step="10" value="0"></div><div class="amount" id="lisaBonus">Potential bonus: £0</div></div>
+  <p class="small">LISA bonus estimate is 25% of contributions, up to the £4,000 annual contribution limit. Check eligibility and withdrawal rules.</p>
+</section>
+
+<section class="card half">
+  <h2>[ 05 ] The 13th payday effect</h2>
+  <p class="muted small">If you are paid every four weeks, you receive 13 paydays in a year. This projection shows what one extra payday could do if you save it.</p>
+  <div class="stat" style="margin-top:10px"><div class="stat-label">One full extra payday</div><div class="big-number" id="extraPayday">£2,100</div></div>
+  <div class="rule"></div>
+  <div class="stat"><div class="stat-label">Annual savings / investments</div><div class="big-number" id="annualSaved">£15,379</div></div>
+  <p class="small">Based on your current allocation percentages. Includes emergency savings and both ISAs; excludes investment growth, interest and any LISA bonus.</p>
+</section>
+</div>
+<p class="footer">PENNYPILOT // YOUR MONEY, YOUR RULES // DATA STAYS IN THIS BROWSER</p>
+</main>
+<script>
+const defaults = [
+  ["Parents / household",10.99,"living"],
+  ["Food & groceries",7.91,"living"],
+  ["Transport",7.91,"living"],
+  ["Phone & subscriptions",2.20,"living"],
+  ["Personal spending",10.99,"spend"],
+  ["Emergency fund",26.37,"save"],
+  ["Stocks & Shares LISA",14.64,"save"],
+  ["Stocks & Shares ISA",4.40,"save"],
+  ["Other savings / future costs",6.59,"save"],
+  ["Extra buffer",8.00,"living"]
+];
+let categories = defaults.map(x=>({name:x[0],pct:x[1],kind:x[2]}));
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Number.isFinite(n)?n:0);
+const freqFactor = () => ({weekly:52, fourweekly:13, monthly:12})[$("frequency").value];
+function renderRows(){
+  $("allocationRows").innerHTML="";
+  categories.forEach((c,i)=>{
+    const tr=document.createElement("tr");
+    const name=document.createElement("td"); name.className="category-name"; name.textContent=c.name;
+    const pct=document.createElement("td");
+    const input=document.createElement("input"); input.className="alloc-input"; input.type="number"; input.min="0"; input.max="100"; input.step="0.01"; input.value=c.pct.toFixed(2); input.setAttribute("aria-label",c.name+" percentage");
+    input.addEventListener("input",()=>{categories[i].pct=Math.max(0,Number(input.value)||0);update()});
+    pct.append(input,document.createTextNode(" %"));
+    const amount=document.createElement("td"); amount.className="amount"; amount.id="amount"+i;
+    tr.append(name,pct,amount); $("allocationRows").append(tr);
+  });
+}
+function update(){
+  const income=Math.max(0,Number($("income").value)||0);
+  const periods=freqFactor(), annual=income*periods, monthly=annual/12;
+  const totalPct=categories.reduce((s,c)=>s+c.pct,0);
+  let savedPct=0,allocated=0;
+  categories.forEach((c,i)=>{
+    const amount=income*c.pct/100; allocated+=amount;
+    if(c.kind==="save")savedPct+=c.pct;
+    $("amount"+i).textContent=money(amount);
+  });
+  $("periodIncome").textContent=money(income);
+  $("monthlyIncome").textContent=money(monthly);
+  $("annualIncome").textContent=money(annual);
+  $("allocatedPct").textContent=totalPct.toFixed(1)+"%";
+  $("leftover").textContent=money(income-allocated);
+  $("savedAmount").textContent=money(income*savedPct/100);
+  $("totalAmount").textContent=money(allocated);
+  const status=$("allocationStatus");
+  if(Math.abs(totalPct-100)<0.01){status.textContent="✓ Your allocation adds up to 100%.";status.className="status good"}
+  else if(totalPct<100){status.textContent="↳ "+(100-totalPct).toFixed(2)+"% ("+money(income-allocated)+") is still unallocated.";status.className="status warn"}
+  else{status.textContent="! You have allocated "+(totalPct-100).toFixed(2)+"% more than your income.";status.className="status bad"}
+  const target=Math.max(0,Number($("emergencyTarget").value)||0), current=Math.max(0,Number($("emergencySaved").value)||0);
+  const contribution=income*(categories.find(c=>c.name==="Emergency fund")?.pct||0)/100;
+  const progress=target>0?Math.min(100,current/target*100):100;
+  $("emergencyTargetText").textContent="Target: "+money(target);
+  $("emergencyBar").style.width=progress+"%";
+  $("emergencyProgress").textContent=progress.toFixed(1)+"% complete · "+money(Math.max(0,target-current))+" remaining";
+  $("emergencyETA").textContent=contribution>0&&target>current?Math.ceil((target-current)/contribution)+" paydays to go":(target<=current?"Target reached":"Set a contribution");
+  const lisa=Math.max(0,Number($("lisaSaved").value)||0), lisaRemaining=Math.max(0,4000-lisa);
+  $("lisaBonus").textContent="Potential bonus: "+money(Math.min(lisa,4000)*.25);
+  const lisaContribution=income*(categories.find(c=>c.name==="Stocks & Shares LISA")?.pct||0)/100;
+  const annualSave=income*savedPct/100*periods;
+  $("extraPayday").textContent=money(income);
+  $("annualSaved").textContent=money(annualSave);
+  if(lisaContribution>0 && lisaRemaining>0){$("lisaBonus").title="At this rate, "+Math.ceil(lisaRemaining/lisaContribution)+" paydays to reach the annual limit."}
+}
+$("income").addEventListener("input",update);
+$("frequency").addEventListener("change",update);
+["emergencySaved","emergencyTarget","lisaSaved"].forEach(id=>$(id).addEventListener("input",update));
+$("reset").addEventListener("click",()=>{categories=defaults.map(x=>({name:x[0],pct:x[1],kind:x[2]}));renderRows();update()});
+$("equal").addEventListener("click",()=>{categories.forEach(c=>c.pct=100/categories.length);renderRows();update()});
+renderRows();update();
+</script>
+</body>
+</html>
