@@ -2,178 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b100d">
-<meta name="description" content="A private, editable personal budgeting dashboard.">
-<link rel="manifest" href="manifest.json">
-<title>Penny-Pilot | Money Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b09">
+<title>Penny-Pilot | Monthly Money Allocator</title>
 <style>
-:root{color-scheme:dark;--bg:#090e0b;--panel:#101914;--panel2:#0c140f;--line:#294332;--green:#a8f0a5;--lime:#d5ffd0;--muted:#91a795;--text:#e4eee4;--amber:#f0c879;--red:#ff938a;--blue:#9bd4ef;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1c3524 0,transparent 48%),var(--bg);color:var(--text);font:14px/1.5 var(--mono);min-height:100vh}
-button,input,select{font:inherit}button{cursor:pointer}
-.wrap{max-width:1080px;margin:auto;padding:18px 15px 50px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 2px 18px;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:11px}.logo{width:40px;height:40px;border:1px solid #5c9664;border-radius:10px;display:grid;place-items:center;color:var(--green);font-size:22px;background:#132219;box-shadow:0 0 25px #8fe69a14}
-.brand h1{font-size:19px;letter-spacing:2px;margin:0;color:var(--lime)}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.5px}
-.top-right{color:var(--muted);font-size:11px;text-align:right}.online{color:var(--green)}
-h2{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin:0 0 14px}
-.hero{margin:18px 0 14px;padding:20px;border:1px solid #35573d;border-radius:15px;background:linear-gradient(130deg,#14271a,#0e1711 70%);position:relative;overflow:hidden}
-.hero:after{content:"£";position:absolute;right:22px;top:-28px;font-size:160px;color:#b7f5b009;font-weight:bold;pointer-events:none}
-.eyebrow{color:var(--muted);font-size:10px;letter-spacing:1.7px;text-transform:uppercase}.hero-row{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.hero-number{font-size:clamp(34px,8vw,54px);font-weight:750;letter-spacing:-2px;color:var(--lime);line-height:1.2;margin:5px 0}.hero-note{color:var(--muted);font-size:11px}.pill{border:1px solid #426e4a;color:var(--green);padding:6px 9px;border-radius:99px;font-size:10px;white-space:nowrap}
-.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:13px}.card{grid-column:span 12;background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:13px;padding:16px;min-width:0}.half{grid-column:span 6}.third{grid-column:span 4}
-.fieldrow{display:flex;gap:10px;flex-wrap:wrap}.field{flex:1;min-width:135px}label{display:block;color:var(--muted);font-size:11px;margin:0 0 6px}
-input,select{width:100%;min-width:0;background:#080e0a;border:1px solid #35513b;color:var(--lime);border-radius:8px;padding:11px;outline:none}
-input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 2px #a8f0a51c}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.stat{padding:12px;border:1px solid #263d2d;border-radius:10px;background:#0a120c;min-width:0}.stat label{font-size:9px;letter-spacing:1px;text-transform:uppercase}.stat strong{display:block;font-size:clamp(17px,3vw,24px);color:var(--lime);overflow-wrap:anywhere;line-height:1.3}.stat small{color:var(--muted);font-size:10px}
-.note{color:var(--muted);font-size:11px;margin:10px 0 0}.divider{border:0;border-top:1px dashed #34503a;margin:15px 0}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:460px}th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:400}td,th{padding:10px 6px;border-bottom:1px dashed #294332}td:nth-child(2),th:nth-child(2){text-align:right}td:last-child,th:last-child{text-align:right}
-.pct{width:82px;text-align:right;padding:8px}.money{color:var(--lime);white-space:nowrap;font-weight:650}.cat{color:var(--text)}.cat input{padding:8px;min-width:120px}
-.meter{height:8px;border-radius:99px;background:#070d09;border:1px solid #294332;overflow:hidden}.meter span{display:block;height:100%;background:linear-gradient(90deg,#6fbf78,#c9ffc4);border-radius:99px}
-.total{display:flex;justify-content:space-between;gap:10px;padding-top:13px;margin-top:8px;border-top:1px solid var(--line);font-weight:bold}.status{font-size:11px;margin-top:10px}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{border:1px solid #4a7952;background:#193321;color:var(--lime);padding:9px 12px;border-radius:8px}.btn:hover{background:#24472d}.btn.ghost{background:#0c150f;border-color:var(--line);color:var(--muted)}.btn.tiny{padding:6px 8px;font-size:11px}
-.goal{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin:12px 0}.goal .field{min-width:0}.goal .field input{max-width:170px}.goal-output{color:var(--green);font-size:11px;text-align:right}
-.chartline{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin:12px 0 5px}.chartline strong{color:var(--lime)}
-.footer{text-align:center;color:#607967;font-size:10px;padding:20px 0}.tinytext{font-size:10px;color:var(--muted)}
-@media(max-width:720px){.half,.third{grid-column:span 12}.wrap{padding:12px 11px 35px}.card{padding:14px}.hero{padding:17px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:18px}}
-@media(max-width:370px){.stats{grid-template-columns:1fr 1fr}.top-right{font-size:9px}}
+:root{color-scheme:dark;--bg:#080b09;--panel:#101612;--line:#293a2d;--text:#f2f5f1;--muted:#a0ada2;--green:#9be49b;--track:#303532;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:850px;margin:0 auto;padding:24px 16px 48px}
+header{padding:4px 0 18px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.brand{font:700 12px var(--mono);letter-spacing:2px;color:var(--green)}
+h1{font-size:clamp(27px,6vw,38px);line-height:1.15;margin:9px 0 5px;letter-spacing:-1px}
+.subtitle{margin:0;color:var(--muted);font-size:14px}
+.panel{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:18px;margin:15px 0}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}
+.inputrow{display:flex;gap:10px;align-items:stretch}
+.inputwrap{position:relative;flex:1;min-width:0}
+.currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:19px;color:var(--green);font-weight:700}
+input{width:100%;height:52px;border:1px solid #49634e;border-radius:9px;background:#080d09;color:#fff;font:700 20px var(--mono);padding:8px 12px 8px 35px;outline:none}
+input:focus{border-color:var(--green);box-shadow:0 0 0 3px #9be49b20}
+button{border:0;border-radius:9px;background:var(--green);color:#071008;font-weight:750;padding:0 18px;font-size:14px;cursor:pointer}
+button:active{transform:scale(.98)}
+.help{font-size:12px;color:var(--muted);margin:10px 0 0}
+.resulthead{display:flex;justify-content:space-between;align-items:end;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h2{font-size:19px;margin:0}.subhead{font-size:12px;color:var(--muted)}
+.total{font:700 24px var(--mono);color:var(--green)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;color:var(--muted);font-size:11px;font-weight:600;padding:10px 5px;border-bottom:1px solid var(--line)}
+td{padding:13px 5px;border-bottom:1px solid #253229;vertical-align:middle}
+th:nth-child(2),td:nth-child(2){text-align:right;white-space:nowrap}
+th:last-child,td:last-child{text-align:right;white-space:nowrap}
+.name{font-weight:600}
+.percent{font:13px var(--mono);color:var(--muted)}
+.amount{font:700 16px var(--mono);color:#fff}
+.bar{height:7px;background:var(--track);border-radius:20px;overflow:hidden;margin-top:7px}
+.bar span{display:block;height:100%;border-radius:20px}
+tfoot td{font-weight:750;border-bottom:0;border-top:1px solid var(--line);padding-top:16px}
+.note{border-left:3px solid #d8ad50;padding:10px 12px;background:#17150e;border-radius:0 7px 7px 0;color:#e7d8b6;font-size:12px;margin-top:14px}
+.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.summary div{background:#0a100c;border:1px solid var(--line);padding:12px;border-radius:9px}
+.summary small{display:block;color:var(--muted);font-size:11px}.summary strong{font:700 18px var(--mono);display:block;margin-top:4px}
+.footer{text-align:center;color:#718174;font:11px var(--mono);margin-top:24px}
+@media(max-width:560px){main{padding:17px 11px 35px}.panel{padding:14px}.inputrow{flex-direction:column}button{height:48px}.name{font-size:13px}.amount{font-size:14px}td{padding:12px 4px}th{font-size:10px}.percent{font-size:11px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<header class="top">
- <div class="brand"><div class="logo">₿</div><div><h1>PENNY-PILOT</h1><small>PERSONAL FINANCE CONSOLE</small></div></div>
- <div class="top-right"><span class="online">● SYSTEM READY</span><br>LOCAL MODE · PRIVATE</div>
+<main>
+<header>
+ <div class="brand">[ PENNY-PILOT ]</div>
+ <h1>Your monthly money plan</h1>
+ <p class="subtitle">Enter your take-home pay. We'll split it into your plan automatically.</p>
 </header>
 
-<section class="hero">
- <div class="hero-row">
-  <div><div class="eyebrow">Available to organise · this payday</div><div class="hero-number" id="heroPay">£2,100.00</div><div class="hero-note" id="heroFrequency">Paid every 4 weeks · 13 paydays / year</div></div>
-  <span class="pill">✦ YOUR MONEY, YOUR RULES</span>
+<section class="panel">
+ <label for="income">How much money did you take home this month?</label>
+ <div class="inputrow">
+  <div class="inputwrap"><span class="currency">£</span><input id="income" type="number" inputmode="decimal" min="0" step="0.01" value="2165.30" placeholder="e.g. 2165.30"></div>
+  <button id="calculate">Calculate my budget</button>
  </div>
+ <p class="help">Enter the amount after tax, National Insurance and any payslip deductions — the money actually available in your bank.</p>
 </section>
 
-<div class="grid">
-<section class="card half">
- <h2>01 / Income setup</h2>
- <div class="fieldrow">
-  <div class="field"><label for="income">Take-home pay (£)</label><input id="income" type="number" min="0" step=".01" inputmode="decimal" value="2100"></div>
-  <div class="field"><label for="frequency">Pay frequency</label><select id="frequency"><option value="4weekly">Every 4 weeks</option><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select></div>
+<section class="panel">
+ <div class="resulthead">
+  <div><h2>Your payday plan</h2><div class="subhead">Suggested amounts based on your income</div></div>
+  <div class="total" id="totalIncome">£2,165.30</div>
  </div>
- <p class="note">Enter the amount that reaches your bank account after tax and deductions. Choose the frequency shown on your payslip.</p>
- <div class="divider"></div>
- <div class="stats">
-  <div class="stat"><label>Average month</label><strong id="monthly">£2,275</strong><small>Annual ÷ 12</small></div>
-  <div class="stat"><label>Annual income</label><strong id="annual">£27,300</strong><small>Based on pay frequency</small></div>
-  <div class="stat"><label>Paydays / year</label><strong id="paydays">13</strong><small>Typical year</small></div>
+ <div style="overflow-x:auto">
+ <table>
+  <thead><tr><th>Category</th><th>% of income</th><th>Put aside</th></tr></thead>
+  <tbody id="rows"></tbody>
+  <tfoot><tr><td>Total</td><td>100%</td><td id="totalOut">£2,165.30</td></tr></tfoot>
+ </table>
  </div>
+ <div class="note" id="lisaNote">LISA note: the suggested amount is designed around the £4,000 yearly contribution limit. Check your tax-year contributions before paying in.</div>
 </section>
 
-<section class="card half">
- <h2>02 / Allocation status</h2>
- <div class="stats">
-  <div class="stat"><label>Allocated</label><strong id="pctTotal">100%</strong><small>of income</small></div>
-  <div class="stat"><label>Unassigned</label><strong id="unassigned">£0</strong><small>left over</small></div>
-  <div class="stat"><label>Saving & investing</label><strong id="savedPay">£1,183</strong><small>per payday</small></div>
+<section class="panel">
+ <h2 style="font-size:17px;margin-bottom:12px">Quick summary</h2>
+ <div class="summary">
+  <div><small>Living costs + spending</small><strong id="livingTotal">£1,000.00</strong></div>
+  <div><small>Savings & investments</small><strong id="savingTotal">£1,133.30</strong></div>
  </div>
- <p class="status good" id="status" aria-live="polite">✓ Balanced budget.</p>
- <p class="note">Change any percentage below. Amounts update instantly. Aim for 100% or leave some money unassigned as a buffer.</p>
+ <p class="help">This is a starting template, not a rule. Change the plan if your actual travel, food, household contribution or bills are different.</p>
 </section>
-
-<section class="card">
- <h2>03 / Your money split</h2>
- <div class="table-wrap"><table><thead><tr><th>Category</th><th>Percent</th><th>Per payday</th></tr></thead><tbody id="rows"></tbody></table></div>
- <div class="total"><span>TOTAL</span><span id="totalMoney">£2,100.00</span></div>
- <div class="actions"><button class="btn" id="add">＋ Add category</button><button class="btn ghost" id="reset">↺ Reset template</button></div>
- <p class="note">Suggested categories are a starting point. Edit names and percentages to reflect your real household costs and priorities.</p>
-</section>
-
-<section class="card half">
- <h2>04 / Emergency fund</h2>
- <div class="goal">
-  <div class="field"><label for="emSaved">Already saved (£)</label><input id="emSaved" type="number" min="0" step="1" inputmode="decimal" value="0"></div>
-  <div class="goal-output" id="emETA">—</div>
- </div>
- <div class="goal">
-  <div class="field"><label for="emTarget">Target (£)</label><input id="emTarget" type="number" min="0" step="100" inputmode="decimal" value="4000"></div>
-  <div class="goal-output" id="emRemaining">£4,000 to go</div>
- </div>
- <div class="meter"><span id="emBar" style="width:0%"></span></div><p class="note" id="emProgress">0% complete</p>
- <p class="note">Keep emergency money somewhere accessible and separate from investments.</p>
-</section>
-
-<section class="card half">
- <h2>05 / Lifetime ISA tracker</h2>
- <div class="field"><label for="lisaYTD">Contributed this tax year (£)</label><input id="lisaYTD" type="number" min="0" step="10" inputmode="decimal" value="0"></div>
- <div class="divider"></div>
- <div class="stats">
-  <div class="stat"><label>Potential bonus</label><strong id="lisaBonus">£0</strong><small>25% of eligible deposits</small></div>
-  <div class="stat"><label>Allowance left</label><strong id="lisaLeft">£4,000</strong><small>Tax-year limit</small></div>
-  <div class="stat"><label>Current contribution</label><strong id="lisaPerPay">£307</strong><small>per payday</small></div>
- </div>
- <p class="note">LISA allowance is £4,000 per tax year. The 25% bonus is subject to eligibility and LISA rules. A Stocks & Shares LISA can fall in value.</p>
-</section>
-
-<section class="card">
- <h2>06 / The 13th payday advantage</h2>
- <div class="stats">
-  <div class="stat"><label>One extra payday</label><strong id="extra">£2,100</strong><small>four-weekly pay only</small></div>
-  <div class="stat"><label>Annual savings split</label><strong id="annualSave">£15,379</strong><small>all save categories</small></div>
-  <div class="stat"><label>Monthly savings avg.</label><strong id="monthlySave">£1,282</strong><small>annual ÷ 12</small></div>
- </div>
- <p class="note">Four-weekly pay gives 13 paydays in a year. This is why your average monthly income is higher than one four-week payslip. Treat the extra payday as a bonus only after covering your normal annual costs.</p>
-</section>
-</div>
-<footer class="footer">PENNY-PILOT // BUILD 02 // SETTINGS SAVED ON THIS DEVICE</footer>
-</div>
+<p class="footer">PENNY-PILOT // SIMPLE MONEY ALLOCATION</p>
+</main>
 <script>
-const $=id=>document.getElementById(id);
-const defaults=[
- ["Parents / household",10.99,"cost"],["Food & groceries",7.91,"cost"],["Transport",7.91,"cost"],
- ["Phone & subscriptions",2.20,"cost"],["Personal spending",10.99,"spend"],["Emergency fund",26.37,"save"],
- ["Stocks & Shares LISA",14.64,"save"],["Stocks & Shares ISA",4.40,"save"],
- ["Other savings / future costs",6.59,"save"],["Extra buffer",8.00,"cost"]
+const baseline=2165.30;
+const plan=[
+ {name:"Contribution to parents / household",amount:250,color:"#71849e",kind:"living"},
+ {name:"Food & groceries",amount:200,color:"#8c9a79",kind:"living"},
+ {name:"Transport",amount:180,color:"#9b8b6d",kind:"living"},
+ {name:"Phone, subscriptions & bills",amount:70,color:"#8796a7",kind:"living"},
+ {name:"Personal spending",amount:300,color:"#9561ee",kind:"living"},
+ {name:"Emergency fund",amount:500,color:"#e0aa36",kind:"saving"},
+ {name:"Stocks & Shares LISA",amount:333.30,color:"#16a34a",kind:"lisa"},
+ {name:"Stocks & Shares ISA",amount:150,color:"#3985ef",kind:"saving"},
+ {name:"Other house deposit savings",amount:150,color:"#159b8d",kind:"saving"},
+ {name:"Extra buffer",amount:32,color:"#91a2b8",kind:"living"}
 ];
-let cats=defaults.map(([name,pct,kind])=>({name,pct,kind}));
-const fmt=n=>new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Number.isFinite(n)?n:0);
-const count=()=>({weekly:52,4weekly:13,monthly:12}[$("frequency").value]);
-function persist(){try{localStorage.setItem("pennypilot-v2",JSON.stringify({income:$("income").value,frequency:$("frequency").value,cats,emSaved:$("emSaved").value,emTarget:$("emTarget").value,lisaYTD:$("lisaYTD").value}));}catch(e){}}
-function render(){
- const body=$("rows");body.innerHTML="";
- cats.forEach((c,i)=>{
-  const tr=document.createElement("tr");
-  const name=document.createElement("td");name.className="cat";
-  const ni=document.createElement("input");ni.value=c.name;ni.setAttribute("aria-label","Category name");ni.addEventListener("input",()=>{cats[i].name=ni.value;persist();});name.append(ni);
-  const p=document.createElement("td");const pi=document.createElement("input");pi.className="pct";pi.type="number";pi.min="0";pi.max="100";pi.step=".01";pi.inputMode="decimal";pi.value=Number(c.pct).toFixed(2);pi.setAttribute("aria-label",c.name+" percentage");pi.addEventListener("input",()=>{cats[i].pct=Math.max(0,Number(pi.value)||0);update();});p.append(pi,document.createTextNode(" %"));
-  const a=document.createElement("td");a.className="money";a.id="a"+i;
-  const del=document.createElement("button");del.className="btn tiny ghost";del.textContent="×";del.title="Remove category";del.setAttribute("aria-label","Remove "+c.name);del.addEventListener("click",()=>{cats.splice(i,1);render();update();});
-  tr.append(name,p,a);const actions=document.createElement("td");actions.append(del);tr.append(actions);body.append(tr);
+const fmt=n=>new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(n);
+const pct=n=>(n/baseline*100);
+function calculate(){
+ const input=document.getElementById("income");
+ const income=Math.max(0,Number(input.value)||0);
+ document.getElementById("totalIncome").textContent=fmt(income);
+ const rows=document.getElementById("rows");rows.innerHTML="";
+ let total=0,living=0,saving=0,lisa=0;
+ plan.forEach(item=>{
+   let share=pct(item.amount),value=income*share/100;
+   if(item.kind==="lisa"){
+     // Keep the suggested LISA contribution within the £333.33 monthly equivalent.
+     value=Math.min(value,333.33);
+     lisa=value;
+   }
+   total+=value;
+   if(item.kind==="living")living+=value;else saving+=value;
+   const tr=document.createElement("tr");
+   const td1=document.createElement("td");
+   td1.innerHTML='<div class="name"></div><div class="bar"><span></span></div>';
+   td1.querySelector(".name").textContent=item.name;
+   td1.querySelector(".bar span").style.width=Math.min(100,share)+"%";
+   td1.querySelector(".bar span").style.background=item.color;
+   const td2=document.createElement("td");td2.className="percent";td2.textContent=share.toFixed(1)+"%";
+   const td3=document.createElement("td");td3.className="amount";td3.textContent=fmt(value);
+   tr.append(td1,td2,td3);rows.append(tr);
  });
+ const remainder=income-total;
+ if(remainder>0.005){
+   const tr=document.createElement("tr"),a=document.createElement("td"),b=document.createElement("td"),c=document.createElement("td");
+   a.innerHTML='<div class="name"></div><div class="bar"><span></span></div>';a.querySelector(".name").textContent="Extra money left over";
+   a.querySelector("span").style.width="0%";a.querySelector("span").style.background="#a8b3aa";
+   b.className="percent";b.textContent=(remainder/income*100).toFixed(1)+"%";
+   c.className="amount";c.textContent=fmt(remainder);tr.append(a,b,c);rows.append(tr);
+   document.getElementById("lisaNote").textContent="LISA note: contributions are capped at £4,000 per tax year (£333.33 per month on average). Any amount above that limit is shown as extra money left over rather than being sent to the LISA.";
+ }else{
+   document.getElementById("lisaNote").textContent="LISA note: the suggested amount is designed around the £4,000 yearly contribution limit. Check your tax-year contributions before paying in. If you are saving for a home soon, consider whether a Cash LISA is more suitable than a Stocks & Shares LISA.";
+ }
+ document.getElementById("totalOut").textContent=fmt(total+Math.max(0,remainder));
+ document.getElementById("livingTotal").textContent=fmt(living);
+ document.getElementById("savingTotal").textContent=fmt(saving);
 }
-function update(){
- const income=Math.max(0,Number($("income").value)||0),n=count(),annual=income*n,month=annual/12;
- const sum=cats.reduce((s,c)=>s+c.pct,0),savePct=cats.filter(c=>c.kind==="save").reduce((s,c)=>s+c.pct,0);
- let used=0,lisaPct=0,emPct=0;
- cats.forEach((c,i)=>{const v=income*c.pct/100;used+=v;const cell=$("a"+i);if(cell)cell.textContent=fmt(v);if(c.name.toLowerCase().includes("lisa"))lisaPct+=c.pct;if(c.name.toLowerCase().includes("emergency"))emPct+=c.pct;});
- $("heroPay").textContent=fmt(income);$("heroFrequency").textContent=({weekly:"Paid weekly · 52 paydays / year",4weekly:"Paid every 4 weeks · 13 paydays / year",monthly:"Paid monthly · 12 paydays / year"}[$("frequency").value]);
- $("monthly").textContent=fmt(month);$("annual").textContent=fmt(annual);$("paydays").textContent=n;
- $("pctTotal").textContent=sum.toFixed(1)+"%";$("unassigned").textContent=fmt(income-used);$("savedPay").textContent=fmt(income*savePct/100);$("totalMoney").textContent=fmt(used);
- const st=$("status");if(Math.abs(sum-100)<.01){st.textContent="✓ Your budget is balanced to 100%.";st.className="status good"}else if(sum<100){st.textContent="↳ "+(100-sum).toFixed(2)+"% remains unassigned.";st.className="status warn"}else{st.textContent="! You have allocated "+(sum-100).toFixed(2)+"% more than your income.";st.className="status bad"}
- const target=Math.max(0,Number($("emTarget").value)||0),saved=Math.max(0,Number($("emSaved").value)||0),per=income*emPct/100,remain=Math.max(0,target-saved),progress=target?Math.min(100,saved/target*100):100;
- $("emBar").style.width=progress+"%";$("emProgress").textContent=progress.toFixed(1)+"% complete";$("emRemaining").textContent=fmt(remain)+" to go";$("emETA").textContent=remain===0?"TARGET REACHED":per>0?Math.ceil(remain/per)+" paydays left":"No contribution set";
- const lisa=Math.max(0,Number($("lisaYTD").value)||0),left=Math.max(0,4000-lisa);
- $("lisaBonus").textContent=fmt(Math.min(4000,lisa)*.25);$("lisaLeft").textContent=fmt(left);$("lisaPerPay").textContent=fmt(income*lisaPct/100);
- const yearlySaved=income*savePct/100*n;$("extra").textContent=fmt(income);$("annualSave").textContent=fmt(yearlySaved);$("monthlySave").textContent=fmt(yearlySaved/12);
- persist();
-}
-function load(){
- try{const d=JSON.parse(localStorage.getItem("pennypilot-v2")||"null");if(d){if(d.income!==undefined)$("income").value=d.income;if(d.frequency)$("frequency").value=d.frequency;if(Array.isArray(d.cats))cats=d.cats;if(d.emSaved!==undefined)$("emSaved").value=d.emSaved;if(d.emTarget!==undefined)$("emTarget").value=d.emTarget;if(d.lisaYTD!==undefined)$("lisaYTD").value=d.lisaYTD;}}catch(e){}
-}
-["income","frequency","emSaved","emTarget","lisaYTD"].forEach(id=>$(id).addEventListener("input",update));
-$("frequency").addEventListener("change",update);
-$("add").addEventListener("click",()=>{cats.push({name:"New category",pct:0,kind:"cost"});render();update();});
-$("reset").addEventListener("click",()=>{if(confirm("Reset categories and percentages to the starter template?")){cats=defaults.map(([name,pct,kind])=>({name,pct,kind}));render();update();}});
-load();render();update();
-if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+document.getElementById("calculate").addEventListener("click",calculate);
+document.getElementById("income").addEventListener("input",calculate);
+document.getElementById("income").addEventListener("keydown",e=>{if(e.key==="Enter")calculate()});
+calculate();
 </script>
-</body></html>
+</body>
+</html>
