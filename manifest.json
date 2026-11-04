@@ -1,0 +1,16 @@
+{
+  "name": "Penny-Pilot Budget Dashboard",
+  "short_name": "Penny-Pilot",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#090e0b",
+  "theme_color": "#0b100d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

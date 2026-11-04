@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b100d">
+<meta name="description" content="A private, editable personal budgeting dashboard.">
+<link rel="manifest" href="manifest.json">
+<title>Penny-Pilot | Money Dashboard</title>
+<style>
+:root{color-scheme:dark;--bg:#090e0b;--panel:#101914;--panel2:#0c140f;--line:#294332;--green:#a8f0a5;--lime:#d5ffd0;--muted:#91a795;--text:#e4eee4;--amber:#f0c879;--red:#ff938a;--blue:#9bd4ef;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1c3524 0,transparent 48%),var(--bg);color:var(--text);font:14px/1.5 var(--mono);min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}
+.wrap{max-width:1080px;margin:auto;padding:18px 15px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 2px 18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:40px;height:40px;border:1px solid #5c9664;border-radius:10px;display:grid;place-items:center;color:var(--green);font-size:22px;background:#132219;box-shadow:0 0 25px #8fe69a14}
+.brand h1{font-size:19px;letter-spacing:2px;margin:0;color:var(--lime)}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.5px}
+.top-right{color:var(--muted);font-size:11px;text-align:right}.online{color:var(--green)}
+h2{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin:0 0 14px}
+.hero{margin:18px 0 14px;padding:20px;border:1px solid #35573d;border-radius:15px;background:linear-gradient(130deg,#14271a,#0e1711 70%);position:relative;overflow:hidden}
+.hero:after{content:"£";position:absolute;right:22px;top:-28px;font-size:160px;color:#b7f5b009;font-weight:bold;pointer-events:none}
+.eyebrow{color:var(--muted);font-size:10px;letter-spacing:1.7px;text-transform:uppercase}.hero-row{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hero-number{font-size:clamp(34px,8vw,54px);font-weight:750;letter-spacing:-2px;color:var(--lime);line-height:1.2;margin:5px 0}.hero-note{color:var(--muted);font-size:11px}.pill{border:1px solid #426e4a;color:var(--green);padding:6px 9px;border-radius:99px;font-size:10px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:13px}.card{grid-column:span 12;background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:13px;padding:16px;min-width:0}.half{grid-column:span 6}.third{grid-column:span 4}
+.fieldrow{display:flex;gap:10px;flex-wrap:wrap}.field{flex:1;min-width:135px}label{display:block;color:var(--muted);font-size:11px;margin:0 0 6px}
+input,select{width:100%;min-width:0;background:#080e0a;border:1px solid #35513b;color:var(--lime);border-radius:8px;padding:11px;outline:none}
+input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 2px #a8f0a51c}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.stat{padding:12px;border:1px solid #263d2d;border-radius:10px;background:#0a120c;min-width:0}.stat label{font-size:9px;letter-spacing:1px;text-transform:uppercase}.stat strong{display:block;font-size:clamp(17px,3vw,24px);color:var(--lime);overflow-wrap:anywhere;line-height:1.3}.stat small{color:var(--muted);font-size:10px}
+.note{color:var(--muted);font-size:11px;margin:10px 0 0}.divider{border:0;border-top:1px dashed #34503a;margin:15px 0}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:460px}th{text-align:left;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:400}td,th{padding:10px 6px;border-bottom:1px dashed #294332}td:nth-child(2),th:nth-child(2){text-align:right}td:last-child,th:last-child{text-align:right}
+.pct{width:82px;text-align:right;padding:8px}.money{color:var(--lime);white-space:nowrap;font-weight:650}.cat{color:var(--text)}.cat input{padding:8px;min-width:120px}
+.meter{height:8px;border-radius:99px;background:#070d09;border:1px solid #294332;overflow:hidden}.meter span{display:block;height:100%;background:linear-gradient(90deg,#6fbf78,#c9ffc4);border-radius:99px}
+.total{display:flex;justify-content:space-between;gap:10px;padding-top:13px;margin-top:8px;border-top:1px solid var(--line);font-weight:bold}.status{font-size:11px;margin-top:10px}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.btn{border:1px solid #4a7952;background:#193321;color:var(--lime);padding:9px 12px;border-radius:8px}.btn:hover{background:#24472d}.btn.ghost{background:#0c150f;border-color:var(--line);color:var(--muted)}.btn.tiny{padding:6px 8px;font-size:11px}
+.goal{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin:12px 0}.goal .field{min-width:0}.goal .field input{max-width:170px}.goal-output{color:var(--green);font-size:11px;text-align:right}
+.chartline{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin:12px 0 5px}.chartline strong{color:var(--lime)}
+.footer{text-align:center;color:#607967;font-size:10px;padding:20px 0}.tinytext{font-size:10px;color:var(--muted)}
+@media(max-width:720px){.half,.third{grid-column:span 12}.wrap{padding:12px 11px 35px}.card{padding:14px}.hero{padding:17px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:18px}}
+@media(max-width:370px){.stats{grid-template-columns:1fr 1fr}.top-right{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+ <div class="brand"><div class="logo">₿</div><div><h1>PENNY-PILOT</h1><small>PERSONAL FINANCE CONSOLE</small></div></div>
+ <div class="top-right"><span class="online">● SYSTEM READY</span><br>LOCAL MODE · PRIVATE</div>
+</header>
+
+<section class="hero">
+ <div class="hero-row">
+  <div><div class="eyebrow">Available to organise · this payday</div><div class="hero-number" id="heroPay">£2,100.00</div><div class="hero-note" id="heroFrequency">Paid every 4 weeks · 13 paydays / year</div></div>
+  <span class="pill">✦ YOUR MONEY, YOUR RULES</span>
+ </div>
+</section>
+
+<div class="grid">
+<section class="card half">
+ <h2>01 / Income setup</h2>
+ <div class="fieldrow">
+  <div class="field"><label for="income">Take-home pay (£)</label><input id="income" type="number" min="0" step=".01" inputmode="decimal" value="2100"></div>
+  <div class="field"><label for="frequency">Pay frequency</label><select id="frequency"><option value="4weekly">Every 4 weeks</option><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select></div>
+ </div>
+ <p class="note">Enter the amount that reaches your bank account after tax and deductions. Choose the frequency shown on your payslip.</p>
+ <div class="divider"></div>
+ <div class="stats">
+  <div class="stat"><label>Average month</label><strong id="monthly">£2,275</strong><small>Annual ÷ 12</small></div>
+  <div class="stat"><label>Annual income</label><strong id="annual">£27,300</strong><small>Based on pay frequency</small></div>
+  <div class="stat"><label>Paydays / year</label><strong id="paydays">13</strong><small>Typical year</small></div>
+ </div>
+</section>
+
+<section class="card half">
+ <h2>02 / Allocation status</h2>
+ <div class="stats">
+  <div class="stat"><label>Allocated</label><strong id="pctTotal">100%</strong><small>of income</small></div>
+  <div class="stat"><label>Unassigned</label><strong id="unassigned">£0</strong><small>left over</small></div>
+  <div class="stat"><label>Saving & investing</label><strong id="savedPay">£1,183</strong><small>per payday</small></div>
+ </div>
+ <p class="status good" id="status" aria-live="polite">✓ Balanced budget.</p>
+ <p class="note">Change any percentage below. Amounts update instantly. Aim for 100% or leave some money unassigned as a buffer.</p>
+</section>
+
+<section class="card">
+ <h2>03 / Your money split</h2>
+ <div class="table-wrap"><table><thead><tr><th>Category</th><th>Percent</th><th>Per payday</th></tr></thead><tbody id="rows"></tbody></table></div>
+ <div class="total"><span>TOTAL</span><span id="totalMoney">£2,100.00</span></div>
+ <div class="actions"><button class="btn" id="add">＋ Add category</button><button class="btn ghost" id="reset">↺ Reset template</button></div>
+ <p class="note">Suggested categories are a starting point. Edit names and percentages to reflect your real household costs and priorities.</p>
+</section>
+
+<section class="card half">
+ <h2>04 / Emergency fund</h2>
+ <div class="goal">
+  <div class="field"><label for="emSaved">Already saved (£)</label><input id="emSaved" type="number" min="0" step="1" inputmode="decimal" value="0"></div>
+  <div class="goal-output" id="emETA">—</div>
+ </div>
+ <div class="goal">
+  <div class="field"><label for="emTarget">Target (£)</label><input id="emTarget" type="number" min="0" step="100" inputmode="decimal" value="4000"></div>
+  <div class="goal-output" id="emRemaining">£4,000 to go</div>
+ </div>
+ <div class="meter"><span id="emBar" style="width:0%"></span></div><p class="note" id="emProgress">0% complete</p>
+ <p class="note">Keep emergency money somewhere accessible and separate from investments.</p>
+</section>
+
+<section class="card half">
+ <h2>05 / Lifetime ISA tracker</h2>
+ <div class="field"><label for="lisaYTD">Contributed this tax year (£)</label><input id="lisaYTD" type="number" min="0" step="10" inputmode="decimal" value="0"></div>
+ <div class="divider"></div>
+ <div class="stats">
+  <div class="stat"><label>Potential bonus</label><strong id="lisaBonus">£0</strong><small>25% of eligible deposits</small></div>
+  <div class="stat"><label>Allowance left</label><strong id="lisaLeft">£4,000</strong><small>Tax-year limit</small></div>
+  <div class="stat"><label>Current contribution</label><strong id="lisaPerPay">£307</strong><small>per payday</small></div>
+ </div>
+ <p class="note">LISA allowance is £4,000 per tax year. The 25% bonus is subject to eligibility and LISA rules. A Stocks & Shares LISA can fall in value.</p>
+</section>
+
+<section class="card">
+ <h2>06 / The 13th payday advantage</h2>
+ <div class="stats">
+  <div class="stat"><label>One extra payday</label><strong id="extra">£2,100</strong><small>four-weekly pay only</small></div>
+  <div class="stat"><label>Annual savings split</label><strong id="annualSave">£15,379</strong><small>all save categories</small></div>
+  <div class="stat"><label>Monthly savings avg.</label><strong id="monthlySave">£1,282</strong><small>annual ÷ 12</small></div>
+ </div>
+ <p class="note">Four-weekly pay gives 13 paydays in a year. This is why your average monthly income is higher than one four-week payslip. Treat the extra payday as a bonus only after covering your normal annual costs.</p>
+</section>
+</div>
+<footer class="footer">PENNY-PILOT // BUILD 02 // SETTINGS SAVED ON THIS DEVICE</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const defaults=[
+ ["Parents / household",10.99,"cost"],["Food & groceries",7.91,"cost"],["Transport",7.91,"cost"],
+ ["Phone & subscriptions",2.20,"cost"],["Personal spending",10.99,"spend"],["Emergency fund",26.37,"save"],
+ ["Stocks & Shares LISA",14.64,"save"],["Stocks & Shares ISA",4.40,"save"],
+ ["Other savings / future costs",6.59,"save"],["Extra buffer",8.00,"cost"]
+];
+let cats=defaults.map(([name,pct,kind])=>({name,pct,kind}));
+const fmt=n=>new Intl.NumberFormat("en-GB",{style:"currency",currency:"GBP"}).format(Number.isFinite(n)?n:0);
+const count=()=>({weekly:52,4weekly:13,monthly:12}[$("frequency").value]);
+function persist(){try{localStorage.setItem("pennypilot-v2",JSON.stringify({income:$("income").value,frequency:$("frequency").value,cats,emSaved:$("emSaved").value,emTarget:$("emTarget").value,lisaYTD:$("lisaYTD").value}));}catch(e){}}
+function render(){
+ const body=$("rows");body.innerHTML="";
+ cats.forEach((c,i)=>{
+  const tr=document.createElement("tr");
+  const name=document.createElement("td");name.className="cat";
+  const ni=document.createElement("input");ni.value=c.name;ni.setAttribute("aria-label","Category name");ni.addEventListener("input",()=>{cats[i].name=ni.value;persist();});name.append(ni);
+  const p=document.createElement("td");const pi=document.createElement("input");pi.className="pct";pi.type="number";pi.min="0";pi.max="100";pi.step=".01";pi.inputMode="decimal";pi.value=Number(c.pct).toFixed(2);pi.setAttribute("aria-label",c.name+" percentage");pi.addEventListener("input",()=>{cats[i].pct=Math.max(0,Number(pi.value)||0);update();});p.append(pi,document.createTextNode(" %"));
+  const a=document.createElement("td");a.className="money";a.id="a"+i;
+  const del=document.createElement("button");del.className="btn tiny ghost";del.textContent="×";del.title="Remove category";del.setAttribute("aria-label","Remove "+c.name);del.addEventListener("click",()=>{cats.splice(i,1);render();update();});
+  tr.append(name,p,a);const actions=document.createElement("td");actions.append(del);tr.append(actions);body.append(tr);
+ });
+}
+function update(){
+ const income=Math.max(0,Number($("income").value)||0),n=count(),annual=income*n,month=annual/12;
+ const sum=cats.reduce((s,c)=>s+c.pct,0),savePct=cats.filter(c=>c.kind==="save").reduce((s,c)=>s+c.pct,0);
+ let used=0,lisaPct=0,emPct=0;
+ cats.forEach((c,i)=>{const v=income*c.pct/100;used+=v;const cell=$("a"+i);if(cell)cell.textContent=fmt(v);if(c.name.toLowerCase().includes("lisa"))lisaPct+=c.pct;if(c.name.toLowerCase().includes("emergency"))emPct+=c.pct;});
+ $("heroPay").textContent=fmt(income);$("heroFrequency").textContent=({weekly:"Paid weekly · 52 paydays / year",4weekly:"Paid every 4 weeks · 13 paydays / year",monthly:"Paid monthly · 12 paydays / year"}[$("frequency").value]);
+ $("monthly").textContent=fmt(month);$("annual").textContent=fmt(annual);$("paydays").textContent=n;
+ $("pctTotal").textContent=sum.toFixed(1)+"%";$("unassigned").textContent=fmt(income-used);$("savedPay").textContent=fmt(income*savePct/100);$("totalMoney").textContent=fmt(used);
+ const st=$("status");if(Math.abs(sum-100)<.01){st.textContent="✓ Your budget is balanced to 100%.";st.className="status good"}else if(sum<100){st.textContent="↳ "+(100-sum).toFixed(2)+"% remains unassigned.";st.className="status warn"}else{st.textContent="! You have allocated "+(sum-100).toFixed(2)+"% more than your income.";st.className="status bad"}
+ const target=Math.max(0,Number($("emTarget").value)||0),saved=Math.max(0,Number($("emSaved").value)||0),per=income*emPct/100,remain=Math.max(0,target-saved),progress=target?Math.min(100,saved/target*100):100;
+ $("emBar").style.width=progress+"%";$("emProgress").textContent=progress.toFixed(1)+"% complete";$("emRemaining").textContent=fmt(remain)+" to go";$("emETA").textContent=remain===0?"TARGET REACHED":per>0?Math.ceil(remain/per)+" paydays left":"No contribution set";
+ const lisa=Math.max(0,Number($("lisaYTD").value)||0),left=Math.max(0,4000-lisa);
+ $("lisaBonus").textContent=fmt(Math.min(4000,lisa)*.25);$("lisaLeft").textContent=fmt(left);$("lisaPerPay").textContent=fmt(income*lisaPct/100);
+ const yearlySaved=income*savePct/100*n;$("extra").textContent=fmt(income);$("annualSave").textContent=fmt(yearlySaved);$("monthlySave").textContent=fmt(yearlySaved/12);
+ persist();
+}
+function load(){
+ try{const d=JSON.parse(localStorage.getItem("pennypilot-v2")||"null");if(d){if(d.income!==undefined)$("income").value=d.income;if(d.frequency)$("frequency").value=d.frequency;if(Array.isArray(d.cats))cats=d.cats;if(d.emSaved!==undefined)$("emSaved").value=d.emSaved;if(d.emTarget!==undefined)$("emTarget").value=d.emTarget;if(d.lisaYTD!==undefined)$("lisaYTD").value=d.lisaYTD;}}catch(e){}
+}
+["income","frequency","emSaved","emTarget","lisaYTD"].forEach(id=>$(id).addEventListener("input",update));
+$("frequency").addEventListener("change",update);
+$("add").addEventListener("click",()=>{cats.push({name:"New category",pct:0,kind:"cost"});render();update();});
+$("reset").addEventListener("click",()=>{if(confirm("Reset categories and percentages to the starter template?")){cats=defaults.map(([name,pct,kind])=>({name,pct,kind}));render();update();}});
+load();render();update();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body></html>
